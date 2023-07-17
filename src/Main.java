@@ -19,12 +19,12 @@ public class Main {
     public Main() {
         ventana = new JFrame("Calculadora de Préstamos");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setSize(1000, 500);
-        ventana.setLayout(new GridLayout(5, 2));
+        ventana.setSize(900, 600);
+        ventana.setLayout(new GridLayout(6, 2));
 
         etiquetaMonto = new JLabel("Monto del Préstamo:");
         etiquetaTasa = new JLabel("Tasa de Interés (%):");
-        etiquetaPlazo = new JLabel("Plazo del Préstamo (meses):");
+        etiquetaPlazo = new JLabel("Plazo del Préstamo (años):");
         etiquetaPagoMensual = new JLabel("Pago Mensual:");
 
         campoMonto = new JTextField();
@@ -42,20 +42,27 @@ public class Main {
                 try {
                     monto = Double.parseDouble(campoMonto.getText());
                     tasa = Double.parseDouble(campoTasa.getText());
-                    plazo = Integer.parseInt(campoPlazo.getText());
+                    plazo = Integer.parseInt(campoPlazo.getText()) * 12;
 
                     if (monto <= 0 || tasa <= 0 || plazo <= 0) {
                         throw new CalculadoraException("Los valores ingresados deben ser mayores a cero.");
                     }
 
-                    PrestamoCalculable prestamo = new PrestamoSimple();
+                    PrestamoCalculable prestamo;
+
+                    if (plazo <= 120) {
+                        prestamo = new PrestamoSimple();
+                    } else {
+                        prestamo = new PrestamoComplejo();
+                    }
+
                     String resultadosAnteriores = areaResultados.getText();
                     String resultadosNuevos = prestamo.calcularPagosMensuales(monto, tasa, plazo);
-                    String resultados = resultadosAnteriores + "\nResumen de información ingresada:\n" +
+                    String resultados = resultadosAnteriores + "\n\nResumen de información ingresada:\n" +
                             "Monto del Préstamo: $" + monto + "\n" +
                             "Tasa de Interés: " + tasa + "%\n" +
-                            "Plazo del Préstamo: " + plazo + " meses\n" +
-                            resultadosNuevos;
+                            "Plazo del Préstamo: " + plazo / 12 + " años\n\n" +
+                            "Nuevos Resultados:\n" + resultadosNuevos;
 
                     areaResultados.setText(resultados);
                     campoMonto.setText("");
@@ -69,7 +76,7 @@ public class Main {
             }
         });
 
-        areaResultados = new JTextArea(10,20);
+        areaResultados = new JTextArea(30, 10);
         areaResultados.setEditable(false);
 
         ventana.add(etiquetaMonto);
