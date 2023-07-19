@@ -50,7 +50,7 @@ public class Main {
 
                     PrestamoCalculable prestamo;
 
-                    if (plazo <= 50) {
+                    if (plazo <= 120) {
                         prestamo = new PrestamoSimple();
                     } else {
                         prestamo = new PrestamoComplejo();
